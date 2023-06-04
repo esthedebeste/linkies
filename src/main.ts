@@ -2,7 +2,10 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 
 const kv = await Deno.openKv()
 
-const API_DOC = "API @ /submit?name=NAME&to=URL\n\n<3"
+const API_DOC = `API:
+/submit?name=NAME&to=URL
+
+<3`
 
 serve(async request => {
 	const url = new URL(request.url)
@@ -16,12 +19,24 @@ serve(async request => {
 		const name = url.searchParams.get("name")
 		const to = url.searchParams.get("to")
 		if (!name || !to)
-			return new Response("Missing name or to parameter", { status: 400 })
+			return new Response(`Missing name or to parameter\n\n${API_DOC}`, {
+				status: 400,
+			})
 
-		kv.set(["urls", name], to)
+		await kv.set(["urls", name], to)
+
+		return new Response(
+			`<!doctype html><html lang="en"><title>created</title>Created <a href=${JSON.stringify(
+				`/${encodeURIComponent(name)}`
+			)}>${JSON.stringify(name)}</a> => ${JSON.stringify(to)}`,
+			{
+				status: 201,
+				headers: { "Content-Type": "text/html; charset=utf-8" },
+			}
+		)
 	}
 
-	const path = request.url.slice(url.origin.length + 1) // https://example.com/abc?a=1 -> abc?a=1 and https://example.com/abc? -> abc?
+	const path = decodeURIComponent(url.pathname.slice(1)) + url.search
 	const to = await kv.get<string>(["urls", path])
 
 	if (to.value != null)
@@ -33,8 +48,11 @@ serve(async request => {
 			},
 		})
 
-	return new Response("Not found :(\n\n" + API_DOC, {
-		status: 404,
-		headers: { "Content-Type": "text/plain; charset=utf-8" },
-	})
+	return new Response(
+		`Couldn't find ${JSON.stringify(path)} :(\n\n${API_DOC}`,
+		{
+			status: 404,
+			headers: { "Content-Type": "text/plain; charset=utf-8" },
+		}
+	)
 })
