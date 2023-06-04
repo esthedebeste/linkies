@@ -4,7 +4,12 @@ const kv = await Deno.openKv()
 
 const API_DOC = `API:
 https://l.esthe.live?name=NAME&to=URL
+    NAME: the name of the short URL
+    URL: the URL to redirect to
 
+Example:
+https://l.esthe.live?name=home&to=https://esthe.live/
+    => https://l.esthe.live/home => https://esthe.live/
 <3`
 
 serve(async request => {
