@@ -10,7 +10,20 @@ https://l.esthe.live?name=NAME&to=URL
 Example:
 https://l.esthe.live?name=home&to=https://esthe.live/
     => https://l.esthe.live/home => https://esthe.live/
-<3`
+
+
+Made with hearts and rainbows! <3`
+
+const powered = [
+	"spinning hamster wheels",
+	"me typing really fast & trying to keep up",
+	"if a billion monkeys typed on a billion typewriters",
+	"the power of friendship",
+	"silliness",
+	"!!!MASSIVE CAT!!!",
+	"ancient egyptian scrolls",
+	"the age old curse of the mummy",
+]
 
 serve(async request => {
 	const url = new URL(request.url)
@@ -20,18 +33,24 @@ serve(async request => {
 		const to = url.searchParams.get("to")
 		if (!name || !to)
 			return new Response(API_DOC, {
-				headers: { "Content-Type": "text/plain; charset=utf-8" },
+				headers: {
+					"Content-Type": "text/plain; charset=utf-8",
+					"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
+				},
 			})
 
 		await kv.set(["urls", name], to)
 
 		return new Response(
-			`<!doctype html><html lang="en"><title>created</title>Created <a href=${JSON.stringify(
+			`<!doctype html><html lang=en><title>created</title>Created <a href=${JSON.stringify(
 				`/${encodeURIComponent(name)}`
 			)}>${JSON.stringify(name)}</a> => ${JSON.stringify(to)}`,
 			{
 				status: 201,
-				headers: { "Content-Type": "text/html; charset=utf-8" },
+				headers: {
+					"Content-Type": "text/html; charset=utf-8",
+					"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
+				},
 			}
 		)
 	}
@@ -45,6 +64,7 @@ serve(async request => {
 			headers: {
 				Location: to.value,
 				"Content-Type": "text/plain; charset=utf-8",
+				"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
 			},
 		})
 
@@ -52,7 +72,10 @@ serve(async request => {
 		`Couldn't find ${JSON.stringify(path)} :(\n\n${API_DOC}`,
 		{
 			status: 404,
-			headers: { "Content-Type": "text/plain; charset=utf-8" },
+			headers: {
+				"Content-Type": "text/plain; charset=utf-8",
+				"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
+			},
 		}
 	)
 })
