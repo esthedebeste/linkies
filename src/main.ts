@@ -3,24 +3,19 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
 const kv = await Deno.openKv()
 
 const API_DOC = `API:
-/submit?name=NAME&to=URL
+https://l.esthe.live?name=NAME&to=URL
 
 <3`
 
 serve(async request => {
 	const url = new URL(request.url)
 
-	if (url.pathname === "/")
-		return new Response(API_DOC, {
-			headers: { "Content-Type": "text/plain; charset=utf-8" },
-		})
-
-	if (url.pathname === "/submit") {
+	if (url.pathname === "/") {
 		const name = url.searchParams.get("name")
 		const to = url.searchParams.get("to")
 		if (!name || !to)
-			return new Response(`Missing name or to parameter\n\n${API_DOC}`, {
-				status: 400,
+			return new Response(API_DOC, {
+				headers: { "Content-Type": "text/plain; charset=utf-8" },
 			})
 
 		await kv.set(["urls", name], to)
@@ -41,7 +36,7 @@ serve(async request => {
 
 	if (to.value != null)
 		return new Response(`Found! Redirecting to ${to.value}`, {
-			status: 302,
+			status: 307,
 			headers: {
 				Location: to.value,
 				"Content-Type": "text/plain; charset=utf-8",
