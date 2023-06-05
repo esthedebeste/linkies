@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts"
+import { timingSafeEqual } from "https://deno.land/std@0.165.0/crypto/timing_safe_equal.ts";
 
 /**
  * ```
@@ -13,7 +14,11 @@ const kv = await Deno.openKv()
 
 interface Shortlink {
 	url: string
-	password?: string
+	password?: ArrayBuffer
+}
+
+async function hash(password: string): Promise<ArrayBuffer> {
+	return await crypto.subtle.digest("SHA-512", new TextEncoder().encode(password))
 }
 
 async function getShortlink(name: string): Promise<Shortlink | null> {
@@ -22,9 +27,10 @@ async function getShortlink(name: string): Promise<Shortlink | null> {
 	return url
 }
 
+
 async function setShortlink(name: string, url: string, password: string | null): Promise<void> {
 	if (password)
-		await kv.set(["urls", name], { url, password })
+		await kv.set(["urls", name], { url, password: await hash(password) })
 	else 
 		await kv.set(["urls", name], url)
 }
@@ -70,7 +76,7 @@ serve(async request => {
 			})
 
 		const current = await getShortlink(name)
-		if(current?.password != null && current.password !== password)
+		if(current?.password != null && password && !timingSafeEqual(current.password, await hash(password)))
 			return new Response(`Forbidden\n\nThe shortlink "${name}" already exists, and you didn't provide the correct password!`, {
 				status: 403,
 				headers: {
