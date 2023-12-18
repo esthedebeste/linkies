@@ -55,6 +55,9 @@ const DOC_HTML = await Deno.readTextFile(
 	new URL("./doc.html", import.meta.url)
 );
 
+const VALID_URL =
+	/^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+
 const powered = [
 	"spinning hamster wheels",
 	"me typing really fast & trying to keep up",
@@ -80,12 +83,19 @@ Deno.serve(async (request) => {
 					"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
 				},
 			});
+		if (!VALID_URL.test(to))
+			return new Response(`Invalid URL: ${JSON.stringify(to)}\n\n${API_DOC}`, {
+				status: 400,
+				headers: {
+					"Content-Type": "text/plain; charset=utf-8",
+					"X-Powered-By": powered[Math.floor(Math.random() * powered.length)],
+				},
+			});
 
 		const current = await getShortlink(name);
 		if (
 			current?.password != null &&
-			password &&
-			!timingSafeEqual(current.password, await hash(password))
+			!timingSafeEqual(current.password, await hash(password ?? ""))
 		)
 			return new Response(
 				`Forbidden\n\nThe shortlink "${name}" already exists, and you didn't provide the correct password!`,
