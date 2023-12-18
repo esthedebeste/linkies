@@ -1,38 +1,40 @@
 <!doctype html>
-<html lang=en>
-<head>
-<title>Linkies</title>
-<style>
-html {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    background-color: #222;
-    color: #f0f;
-}
-* {
-    font-family: monospace;
-    box-sizing: border-box;
-}
-label, input {
-    display: block;
-}
-input {
-    background-color: #222;
-    color: #f0f;
-    border: 1px solid #f0f;
-    width: 100%;
-}
-input:hover, input:focus {
-    background-color: #333;
-}
-</style>
-<body>
-<pre>
+<html lang="en">
+	<head>
+		<title>Linkies</title>
+		<style>
+			html {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100%;
+				width: 100%;
+				background-color: #222;
+				color: #f0f;
+			}
+			* {
+				font-family: monospace;
+				box-sizing: border-box;
+			}
+			label,
+			input {
+				display: block;
+			}
+			input {
+				background-color: #222;
+				color: #f0f;
+				border: 1px solid #f0f;
+				width: 100%;
+			}
+			input:hover,
+			input:focus {
+				background-color: #333;
+			}
+		</style>
+		<body>
+			<pre>
 API:
-    https://l.esthe.live?name=NAME&to=URL[&password=PASSWORD]
+    https://l.esthe.win?name=NAME&to=URL[&password=PASSWORD]
         NAME: the name of the short URL
         URL: the URL to redirect to
         PASSWORD: the password to use for the short URL. (optional)
@@ -47,24 +49,38 @@ Unprotected shortlinks:
     - Can override other unprotected shortlinks
 
 Example:
-    https://l.esthe.live?name=home&to=https://esthe.live/
-        => https://l.esthe.live/home => https://esthe.live/
+    https://l.esthe.win?name=home&to=https://esthe.win/
+        => https://l.esthe.win/home => https://esthe.win/
 
 
 Made with hearts and rainbows! &lt;3
-</pre>
-<form>
-    <label>
-        Shortlink name: 
-        <input type="text" name="name" placeholder="home">
-    </label>
-    <label>
-        Redirect to: 
-        <input type="text" name="to" placeholder="https://esthe.live/">
-    </label>
-    <label>
-        Password (optional): 
-        <input type="password" name="password" placeholder="verysecretpassword">
-    </label>
-    <input type="submit" value="Submit">
-</form>
+</pre
+			>
+			<form>
+				<label>
+					Shortlink name:
+					<input
+						type="text"
+						name="name"
+						placeholder="home"
+						autocomplete="username"
+					/>
+				</label>
+				<label>
+					Redirect to:
+					<input type="text" name="to" placeholder="https://esthe.win/" />
+				</label>
+				<label>
+					Password (optional):
+					<input
+						type="password"
+						name="password"
+						placeholder="verysecretpassword"
+						autocomplete="current-password"
+					/>
+				</label>
+				<input type="submit" value="Submit" />
+			</form>
+		</body>
+	</head>
+</html>
